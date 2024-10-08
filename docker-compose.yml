@@ -1,0 +1,62 @@
+services:
+
+  php-web:
+    image: laravel:web
+    container_name: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/app
+    networks:
+      net:
+        ipv4_address: 172.16.0.2
+
+  app:
+    image: laravel:app
+    container_name: php
+    volumes:
+      - ./src:/var/app
+      # - vendor:/var/app/vendor
+    networks:
+      net:
+        ipv4_address: 172.16.0.3
+
+  php-db:
+    image: laravel:db
+    container_name: mysql
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - "3312:3306"
+    networks:
+      net:
+        ipv4_address: 172.16.0.4
+
+  php-admin:
+    image: laravel:admin
+    container_name: PhpMyAdmin
+    ports:
+      - "8880:80"
+    depends_on:
+      - php-db
+    networks:
+      net:
+        ipv4_address: 172.16.0.5
+
+networks:
+  net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.0.0/24
+          gateway: 172.16.0.1
+
+volumes:
+  vendor:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/src/vendor
+      o: bind
+  db-data:
