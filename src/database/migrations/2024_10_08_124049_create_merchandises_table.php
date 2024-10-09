@@ -14,7 +14,6 @@ class CreateMerchandisesTable extends Migration
             $table->string('merchandise_name', 30); // 商品名
             $table->integer('merchandise_price'); // 商品値段
             $table->integer('stock'); // 在庫
-            $table->boolean('merchandise_display'); // 表示
             $table->timestamps();
         });
     }
