@@ -9,18 +9,17 @@ class CreateToppingToOrderTable extends Migration
 {
     public function up()
     {
-        Schema::create('topping_to_order', function (Blueprint $table) {
+        Schema::create('topping_to_orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('topping_id')->constrained('toppings'); // 外部キー
             $table->foreignId('order_id')->constrained('orders'); // 外部キー
-            $table->integer('pieces'); // 注文個数
             $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('topping_to_order');
+        Schema::dropIfExists('topping_to_orders');
     }
 }
 

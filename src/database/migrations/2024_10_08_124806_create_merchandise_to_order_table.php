@@ -9,7 +9,7 @@ class CreateMerchandiseToOrderTable extends Migration
 {
     public function up()
     {
-        Schema::create('merchandise_to_order', function (Blueprint $table) {
+        Schema::create('merchandise_to_orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('merchandise_id')->constrained('merchandises'); // 外部キー
             $table->foreignId('order_id')->constrained('orders'); // 外部キー
@@ -20,6 +20,6 @@ class CreateMerchandiseToOrderTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('merchandise_to_order');
+        Schema::dropIfExists('merchandise_to_orders');
     }
 }
