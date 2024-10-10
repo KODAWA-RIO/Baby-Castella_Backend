@@ -7,7 +7,11 @@ use App\Http\Controllers\ToppingController;
 use App\Http\Controllers\OrderController;
 
 Route::get('/merchandises', [MerchandiseController::class, 'index']);
+Route::post('/merchandises/store', [MerchandiseController::class, 'store']);
+
 Route::get('/toppings', [ToppingController::class, 'index']);
+Route::post('/toppings/store', [ToppingController::class, 'store']);
+
 Route::get('/orders', [OrderController::class, 'index']);
 
 Route::get('/user', function (Request $request) {

@@ -28,7 +28,19 @@ class ToppingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // バリデーション
+        $validatedData = $request->validate([
+            'topping_name' => 'required|string|max:255',
+            'topping_price' => 'required|numeric',
+        ]);
+
+        // データベースにトッピングを保存
+        $topping = new Topping();
+        $topping->topping_name = $validatedData['topping_name']; // カラム名が 'name' だとエラーになる
+        $topping->topping_price = $validatedData['topping_price'];
+        $topping->save();
+
+        return response()->json(['message' => 'Topping created successfully'], 201);
     }
 
     /**
