@@ -80,4 +80,9 @@ return [
         'validate_csrf_token' => Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
     ],
 
+    'personal_access_tokens' => [
+        'enabled' => false,
+        'model' => \Laravel\Sanctum\PersonalAccessToken::class,
+    ],
+
 ];
