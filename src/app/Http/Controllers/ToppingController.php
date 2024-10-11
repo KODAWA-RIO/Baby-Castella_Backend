@@ -7,25 +7,13 @@ use Illuminate\Http\Request;
 
 class ToppingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // トッピングの一覧を取得
     public function index()
     {
         return response()->json(Topping::all());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    // トッピングを登録
     public function store(Request $request)
     {
         // バリデーション
@@ -34,44 +22,48 @@ class ToppingController extends Controller
             'topping_price' => 'required|numeric',
         ]);
 
-        // データベースにトッピングを保存
+        // トッピングを保存
         $topping = new Topping();
-        $topping->topping_name = $validatedData['topping_name']; // カラム名が 'name' だとエラーになる
+        $topping->topping_name = $validatedData['topping_name'];
         $topping->topping_price = $validatedData['topping_price'];
         $topping->save();
 
         return response()->json(['message' => 'Topping created successfully'], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // トッピングの取得（編集時に元データを取得するため）
+    public function show($id)
     {
-        //
+        $topping = Topping::findOrFail($id);
+        return response()->json($topping);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // トッピングを更新
+    public function update(Request $request, $id)
     {
-        //
+        // バリデーション
+        $validatedData = $request->validate([
+            'topping_name' => 'required|string|max:255',
+            'topping_price' => 'required|numeric',
+        ]);
+
+        // トッピングをIDで取得
+        $topping = Topping::findOrFail($id);
+
+        // トッピングデータを更新
+        $topping->topping_name = $validatedData['topping_name'];
+        $topping->topping_price = $validatedData['topping_price'];
+        $topping->save();
+
+        return response()->json(['message' => 'Topping updated successfully'], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // トッピングを削除
+    public function destroy($id)
     {
-        //
-    }
+        $topping = Topping::findOrFail($id);
+        $topping->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json(['message' => 'Topping deleted successfully'], 200);
     }
 }

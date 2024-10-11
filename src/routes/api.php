@@ -16,6 +16,9 @@ Route::delete('/merchandises/{id}', [MerchandiseController::class, 'destroy']);
 
 Route::get('/toppings', [ToppingController::class, 'index']);
 Route::post('/toppings/store', [ToppingController::class, 'store']);
+Route::get('/toppings/{id}', [ToppingController::class, 'show']);
+Route::put('/toppings/{id}', [ToppingController::class, 'update']);
+Route::delete('/toppings/{id}', [ToppingController::class, 'destroy']);
 
 Route::get('/orders', [OrderController::class, 'index']);
 

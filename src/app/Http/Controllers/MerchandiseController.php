@@ -34,7 +34,7 @@ class MerchandiseController extends Controller
     }
 
     // 商品の更新
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
         // 商品をIDで取得
         $merchandise = Merchandise::findOrFail($id);
@@ -56,12 +56,12 @@ class MerchandiseController extends Controller
     }
 
     // 商品の取得 (編集時に元データを取得するため)
-    public function show($id)
+    public function show(string $id)
     {
         $merchandise = Merchandise::findOrFail($id);
         return response()->json($merchandise);
     }
-    public function destroy($id)
+    public function destroy(string $id)
     {
         $merchandise = Merchandise::findOrFail($id);
         $merchandise->delete();
