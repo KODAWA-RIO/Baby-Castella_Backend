@@ -95,10 +95,53 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    // 注文詳細を取得
+    public function show($id)
     {
-        //
+        // 注文を取得
+        $order = Order::findOrFail($id);
+    
+        // 商品（フレーバー）を取得
+        $merchandises = MerchandiseToOrder::where('order_id', $id)
+            ->with('merchandise') // 関連する商品データを取得
+            ->get();
+    
+        // トッピングを取得
+        $toppings = ToppingToOrder::where('order_id', $id)
+            ->with('topping') // 関連するトッピングデータを取得
+            ->get();
+    
+        // フォーマットされた日付を返す
+        $formatted_date = $order->updated_at->format('Y-m-d');
+    
+        return response()->json([
+            'order' => [
+                'id' => $order->id,
+                'customer' => $order->customer,
+                'total_amount' => $order->total_amount,
+                'deposit_amount' => $order->deposit_amount,
+                'change' => $order->change,
+                'memo' => $order->memo,
+                'date' => $formatted_date,
+            ],
+            'merchandises' => $merchandises->map(function ($merchandise) {
+                return [
+                    'id' => $merchandise->merchandise->id,
+                    'merchandise_name' => $merchandise->merchandise->merchandise_name,
+                    'merchandise_price' => $merchandise->merchandise->merchandise_price,
+                    'pieces' => $merchandise->pieces,
+                ];
+            }),
+            'toppings' => $toppings->map(function ($topping) {
+                return [
+                    'id' => $topping->topping->id,
+                    'topping_name' => $topping->topping->topping_name,
+                    'topping_price' => $topping->topping->topping_price,
+                ];
+            }),
+        ]);
     }
+    
 
     /**
      * Show the form for editing the specified resource.
