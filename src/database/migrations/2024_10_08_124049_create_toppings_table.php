@@ -13,6 +13,7 @@ class CreateToppingsTable extends Migration
             $table->id();
             $table->string('topping_name', 30); // トッピング名
             $table->integer('topping_price'); // トッピング値段
+            $table->boolean('topping_display');
             $table->timestamps();
         });
     }
