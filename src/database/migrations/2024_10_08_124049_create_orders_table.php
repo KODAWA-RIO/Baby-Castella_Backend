@@ -16,7 +16,6 @@ class CreateOrdersTable extends Migration
             $table->integer('change'); // お釣り
             $table->string('memo', 100)->nullable(); // メモ
             $table->integer('situation'); // 進捗状況
-            $table->foreignId('user_id')->constrained('users'); // 外部キー
             $table->timestamps();
         });
     }
