@@ -21,6 +21,7 @@ class MerchandiseController extends Controller
             'merchandise_name' => 'required|string|max:255',
             'merchandise_price' => 'required|numeric',
             'stock' => 'required|integer',
+            'merchandise_display' => 'required|boolean', // 新しく追加
         ]);
 
         // 商品を保存
@@ -28,6 +29,7 @@ class MerchandiseController extends Controller
         $merchandise->merchandise_name = $validatedData['merchandise_name'];
         $merchandise->merchandise_price = $validatedData['merchandise_price'];
         $merchandise->stock = $validatedData['stock'];
+        $merchandise->merchandise_display = $validatedData['merchandise_display']; // 新しく追加
         $merchandise->save();
 
         return response()->json(['message' => 'Merchandise created successfully'], 201);
@@ -44,12 +46,14 @@ class MerchandiseController extends Controller
             'merchandise_name' => 'required|string|max:255',
             'merchandise_price' => 'required|numeric',
             'stock' => 'required|integer',
+            'merchandise_display' => 'required|boolean', // 新しく追加
         ]);
 
         // 商品データを更新
         $merchandise->merchandise_name = $validatedData['merchandise_name'];
         $merchandise->merchandise_price = $validatedData['merchandise_price'];
         $merchandise->stock = $validatedData['stock'];
+        $merchandise->merchandise_display = $validatedData['merchandise_display']; // 新しく追加
         $merchandise->save();
 
         return response()->json(['message' => 'Merchandise updated successfully'], 200);
@@ -61,6 +65,7 @@ class MerchandiseController extends Controller
         $merchandise = Merchandise::findOrFail($id);
         return response()->json($merchandise);
     }
+
     public function destroy(string $id)
     {
         $merchandise = Merchandise::findOrFail($id);
@@ -68,5 +73,4 @@ class MerchandiseController extends Controller
 
         return response()->json(['message' => 'Merchandise deleted successfully'], 200);
     }
-
 }
