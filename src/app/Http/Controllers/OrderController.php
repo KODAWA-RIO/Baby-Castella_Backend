@@ -42,7 +42,7 @@ class OrderController extends Controller
             'situation' => 'required|integer',
             'flavors' => 'required|array',
             'flavors.*.name' => 'required|string',
-            'flavors.*.quantity' => 'required|integer',
+            'flavors.*.quantity' => 'required|integer|min:0',  // 0以上の数量を許可
             'toppings' => 'array',
         ]);
 
@@ -56,19 +56,32 @@ class OrderController extends Controller
         $order->situation = $validatedData['situation'];
         $order->save();
 
-        // 商品（フレーバー）の注文を保存
+        // 商品（フレーバー）の注文を保存し、pieces が 0 でない場合のみ保存
         foreach ($validatedData['flavors'] as $flavor) {
-            $merchandise = Merchandise::where('merchandise_name', $flavor['name'])->first(); // 商品を取得
+            // piecesが0の場合、スキップ
+            if ($flavor['quantity'] > 0) {
+                $merchandise = Merchandise::where('merchandise_name', $flavor['name'])->first(); // 商品を取得
 
-            if ($merchandise) {
-                MerchandiseToOrder::create([
-                    'merchandise_id' => $merchandise->id,
-                    'order_id' => $order->id,
-                    'pieces' => $flavor['quantity'],
-                ]);
-            } else {
-                // 商品が見つからない場合の処理（例: ログに記録）
-                \Log::warning("Merchandise not found: " . $flavor['name']);
+                if ($merchandise) {
+                    // 在庫が足りているかチェック
+                    if ($merchandise->stock >= $flavor['quantity']) {
+                        // 在庫を減少させる
+                        $merchandise->stock -= $flavor['quantity'];
+                        $merchandise->save();
+
+                        // MerchandiseToOrderテーブルに登録
+                        MerchandiseToOrder::create([
+                            'merchandise_id' => $merchandise->id,
+                            'order_id' => $order->id,
+                            'pieces' => $flavor['quantity'],
+                        ]);
+                    } else {
+                        return response()->json(['error' => '在庫が不足しています'], 400);
+                    }
+                } else {
+                    \Log::warning("Merchandise not found: " . $flavor['name']);
+                    return response()->json(['error' => '商品が見つかりません'], 404);
+                }
             }
         }
 
@@ -83,13 +96,13 @@ class OrderController extends Controller
                         'order_id' => $order->id,
                     ]);
                 } else {
-                    // トッピングが見つからない場合の処理（例: ログに記録）
                     \Log::warning("Topping not found: " . $topping['topping_name']);
+                    return response()->json(['error' => 'トッピングが見つかりません'], 404);
                 }
             }
         }
 
-        return response()->json(['message' => 'Order created successfully', 'order_id' => $order->id], 201);
+        return response()->json(['message' => 'Order created and stock updated successfully', 'order_id' => $order->id], 201);
     }
 
     /**
