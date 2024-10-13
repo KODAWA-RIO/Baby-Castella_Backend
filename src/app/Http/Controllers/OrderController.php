@@ -194,5 +194,23 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    public function update(Request $request, $id)
+    {
+        // バリデーションを追加（situationは整数値）
+        $validatedData = $request->validate([
+            'situation' => 'required|integer',
+        ]);
 
+        // 注文をIDで検索し、見つからない場合は404を返す
+        $order = Order::findOrFail($id);
+
+        // situationを更新
+        $order->situation = $validatedData['situation'];
+        $order->save();
+
+        return response()->json([
+            'message' => 'Order situation updated successfully',
+            'order' => $order,
+        ], 200);
+    }
 }
