@@ -108,7 +108,6 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    // 注文詳細を取得
     public function show($id)
     {
         // 注文を取得
@@ -154,29 +153,46 @@ class OrderController extends Controller
             }),
         ]);
     }
-    
 
     /**
-     * Show the form for editing the specified resource.
+     * 指定されたsituationに基づく注文データを取得する
      */
-    public function edit(string $id)
+    public function ordersBySituation($situation)
     {
-        //
+        // 指定されたsituationの注文を取得
+        $orders = Order::where('situation', $situation)
+            ->with(['merchandiseToOrders.merchandise', 'toppingToOrders.topping']) // 中間テーブルを通して商品やトッピングを取得
+            ->get();
+
+        // データを整形して返す
+        $formattedOrders = $orders->map(function ($order) {
+            // 商品情報を items フィールドに変換
+            $items = $order->merchandiseToOrders->map(function ($merchandiseToOrder) {
+                return [
+                    'flavor' => $merchandiseToOrder->merchandise->merchandise_name,
+                    'quantity' => $merchandiseToOrder->pieces,
+                ];
+            });
+
+            // トッピング情報を toppings フィールドに変換
+            $toppings = $order->toppingToOrders->map(function ($toppingToOrder) {
+                return $toppingToOrder->topping->topping_name;
+            });
+
+            return [
+                'id' => $order->id,
+                'name' => $order->customer,
+                'items' => $items,
+                'toppings' => $toppings,
+                'memo' => $order->memo,
+            ];
+        });
+
+        return response()->json($formattedOrders);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }
