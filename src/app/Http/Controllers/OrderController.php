@@ -14,19 +14,29 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {  
-        // Orderデータにupdated_atをフォーマットして追加
-        $orders = Order::all()->map(function ($order) {
+    public function index(Request $request)
+    {
+        // 検索クエリがあればフィルターを追加
+        $query = Order::query();
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('customer', 'like', "%$search%");
+        }
+
+        // ページネーションの実装（1ページあたり10件表示）
+        $orders = $query->paginate(10);
+
+        // updated_at をフォーマットして追加
+        $orders->getCollection()->transform(function ($order) {
             // updated_at を日付のみにフォーマット
             $order->formatted_date = $order->updated_at->format('Y-m-d');
             return $order;
         });
 
-        // 加工したデータを返す
+        // ページネーションと加工したデータを返す
         return response()->json($orders);
     }
-
     /**
      * Store a newly created resource in storage.
      */
