@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MerchandiseController;
 use App\Http\Controllers\ToppingController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SalesController;
 
 Route::get('/merchandises', [MerchandiseController::class, 'index']);
 Route::post('/merchandises/store', [MerchandiseController::class, 'store']);
@@ -25,6 +26,8 @@ Route::put('/orders/{id}', [OrderController::class, 'update']);
 Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
 // 指定された situation に基づく注文データを取得
 Route::get('/orders/situation/{situation}', [OrderController::class, 'ordersBySituation']);
+
+Route::get('/sales/dates', [SalesController::class, 'getOrderDates']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
