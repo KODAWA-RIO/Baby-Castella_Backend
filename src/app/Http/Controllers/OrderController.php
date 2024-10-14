@@ -223,4 +223,11 @@ class OrderController extends Controller
             'order' => $order,
         ], 200);
     }
+    public function destroy($id)
+    {
+        $order = Order::findOrFail($id); // 注文IDに基づいて注文を検索
+        $order->delete(); // 注文を削除
+
+        return response()->json(['message' => 'Order deleted successfully']);
+    }
 }

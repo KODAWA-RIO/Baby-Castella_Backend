@@ -22,6 +22,7 @@ Route::get('/orders', [OrderController::class, 'index']);
 Route::post('/orders', [OrderController::class, 'store']);
 Route::get('/orders/{id}', [OrderController::class, 'show']);
 Route::put('/orders/{id}', [OrderController::class, 'update']);
+Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
 // 指定された situation に基づく注文データを取得
 Route::get('/orders/situation/{situation}', [OrderController::class, 'ordersBySituation']);
 

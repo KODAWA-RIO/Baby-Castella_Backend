@@ -8,15 +8,20 @@ use Illuminate\Support\Facades\Schema;
 class CreateMerchandiseToOrderTable extends Migration
 {
     public function up()
-    {
-        Schema::create('merchandise_to_orders', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('merchandise_id')->constrained('merchandises'); // 外部キー
-            $table->foreignId('order_id')->constrained('orders'); // 外部キー
-            $table->integer('pieces'); // 注文個数
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('merchandise_to_orders', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('merchandise_id')
+              ->constrained('merchandises')
+              ->onDelete('cascade'); // 親の削除時に自動で削除
+        $table->foreignId('order_id')
+              ->constrained('orders')
+              ->onDelete('cascade'); // 親の削除時に自動で削除
+        $table->integer('pieces');
+        $table->timestamps();
+    });
+}
+
 
     public function down()
     {
