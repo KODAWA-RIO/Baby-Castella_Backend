@@ -28,6 +28,8 @@ Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
 Route::get('/orders/situation/{situation}', [OrderController::class, 'ordersBySituation']);
 
 Route::get('/sales/dates', [SalesController::class, 'getOrderDates']);
+Route::get('/sales/merchandise/{date}', [SalesController::class, 'merchandiseSalesByDate']);
+Route::get('/sales/topping/{date}', [SalesController::class, 'toppingSalesByDate']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
